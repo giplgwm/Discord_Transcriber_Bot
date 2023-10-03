@@ -1,7 +1,9 @@
+import asyncio
+
 import discord
 import os
 import openai
-
+import time
 
 discord_token = os.getenv('discord_token')
 openai.api_key = os.getenv('openai_key')
@@ -29,7 +31,7 @@ async def record(ctx):  # If you're using commands.Bot, this will also work.
         once_done,  # What to do once done.
         ctx.channel  # The channel to disconnect from.
     )
-    await ctx.respond("Started recording!")
+    await ctx.respond(f"Started recording at {time.strftime('%I:%M %p',time.localtime())}")
 
 
 async def once_done(sink: discord.sinks, channel: discord.TextChannel, *args):  # Our voice client already passes these in.
@@ -45,8 +47,8 @@ async def once_done(sink: discord.sinks, channel: discord.TextChannel, *args):  
         audio_file = open(file.filename, 'rb')
         transcript = openai.Audio.transcribe("whisper-1", audio_file)
         audio_file.close()
-        await channel.send(transcript['text'])
-    # await channel.send(f"finished recording audio for: {', '.join(recorded_users)}.", files=files)  # Send a message with the accumulated files.
+        await channel.send(f"<@{file.filename.replace('.wav','')}>: {transcript['text']}")
+        os.remove(file.filename)
 
 
 @bot.command()
@@ -55,9 +57,11 @@ async def stop_recording(ctx):
         vc = connections[ctx.guild.id]
         vc.stop_recording()  # Stop recording, and call the callback (once_done).
         del connections[ctx.guild.id]  # Remove the guild from the cache.
-        await ctx.delete()  # And delete.
+        await ctx.respond(f"Stopped recording at {time.strftime('%I:%M %p',time.localtime())}")
     else:
         await ctx.respond("I am currently not recording here.")  # Respond with this if we aren't recording.
+
+
 
 
 bot.run(discord_token)
