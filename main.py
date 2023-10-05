@@ -9,8 +9,8 @@ load_dotenv()
 discord_token = os.getenv('discord_token')
 openai.api_key = os.getenv('openai_key')
 bot = discord.Bot(intents=discord.Intents.all())
-transcribing = False
 connections = {}
+transcribing = {}
 
 
 @bot.event
@@ -57,7 +57,7 @@ async def once_done(sink: discord.sinks, channel: discord.TextChannel,
 @bot.command()
 async def stop(ctx):
     if ctx.guild.id in connections:  # Check if the guild is in the cache.
-        if transcribing:
+        if ctx.guild.id in transcribing:
             del connections[ctx.guild.id]
             await ctx.respond(f"Stopped recording at {time.strftime('%I:%M %p', time.localtime())}")
             return
@@ -75,14 +75,13 @@ async def stop(ctx):
 
 @bot.command()
 async def transcribe(ctx):
-    transcribing = True
     voice = ctx.author.voice
     if not voice:
         await ctx.respond("You aren't in a voice channel!")
 
     vc = await voice.channel.connect()
     connections.update({ctx.guild.id: vc})
-
+    transcribing.update({ctx.guild.id: vc})
     await ctx.respond(f"Transcription begins at: {time.strftime('%I:%M %p', time.localtime())}")
 
     while vc.guild.id in connections:
@@ -95,7 +94,7 @@ async def transcribe(ctx):
         if vc.guild.id in connections:
             await asyncio.sleep(2)
     await vc.disconnect()
-    transcribing = False
+    del transcribing[vc.guild.id]
 
 
 bot.run(discord_token)
