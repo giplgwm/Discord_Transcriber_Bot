@@ -88,8 +88,6 @@ async def transcribe(ctx):
         vc.start_recording(discord.sinks.WaveSink(), once_done, ctx.channel)
         if vc.guild.id in connections:
             await asyncio.sleep(15)
-        else:
-            break
         vc.stop_recording()
         if vc.guild.id in connections:
             await asyncio.sleep(2)
