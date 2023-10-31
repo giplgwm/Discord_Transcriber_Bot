@@ -23,4 +23,4 @@ The bot has the following commands:
 
 - `/record`: Starts recording audio from the user's voice channel.
 - `/stop`: Stops recording audio and transcribing it.
-- `/transcribe`: Starts transcribing audio from the user's voice channel in real-time.
+- `/transcribe`: Starts transcribing audio from the user's voice channel continuously.
