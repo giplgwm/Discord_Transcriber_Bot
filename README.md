@@ -1,6 +1,6 @@
 # Discord Voice Transcription Bot
 
-This is a Discord bot that transcribes voice messages in real-time using OpenAI's API.
+This is a Discord bot that transcribes the audio from a discord Voice Channel in real-time using OpenAI's API.
 
 ## Environment Variables
 
