@@ -13,7 +13,7 @@ The following environment variables need to be set:
 
 The following libraries are used:
 
-- `discord`: A Python wrapper for the Discord API.
+- `py-cord`: A Python wrapper for the Discord API.
 - `openai`: A Python wrapper for the OpenAI API.
 - `dotenv`: A Python library for loading environment variables from a `.env` file.
 
